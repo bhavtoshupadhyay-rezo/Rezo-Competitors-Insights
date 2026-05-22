@@ -1,0 +1,25 @@
+# One-click deploy config for Render (https://render.com).
+# After pushing this repo to GitHub, in Render: New → Blueprint → connect repo.
+# Render reads this file and provisions everything automatically.
+
+services:
+  - type: web
+    name: rezo-intelligence-hub
+    runtime: node
+    plan: free
+    rootDir: .
+    # Build: install root deps → vite build → install server deps
+    buildCommand: |
+      npm install
+      npm run build
+      cd server && npm install
+    startCommand: cd server && node index.js
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # SITE_PASSWORD is intentionally left without a value here — set it
+      # manually in the Render dashboard so it stays out of git.
+      # Leave it unset for a fully-open URL; set it for Basic Auth gating.
+      - key: SITE_PASSWORD
+        sync: false
