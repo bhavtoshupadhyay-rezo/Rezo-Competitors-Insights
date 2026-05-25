@@ -38,20 +38,6 @@ export async function fetchSnapshots() {
   return jsonOrThrow(res, '/api/snapshots');
 }
 
-export async function fetchCachedEntrants() {
-  const res = await fetch(`${API_BASE}/discover-entrants`);
-  return jsonOrThrow(res, 'GET /api/discover-entrants');
-}
-
-export async function discoverEntrants({ keyword, category, maxAgeDays } = {}) {
-  const res = await fetch(`${API_BASE}/discover-entrants`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ keyword, category, maxAgeDays }),
-  });
-  return jsonOrThrow(res, 'POST /api/discover-entrants');
-}
-
 export async function checkServerHealth() {
   try {
     const res = await fetch(`${API_BASE}/health`);
@@ -68,7 +54,5 @@ export default {
   refreshAllData,
   refreshSource,
   fetchSnapshots,
-  fetchCachedEntrants,
-  discoverEntrants,
   checkServerHealth,
 };

@@ -10,8 +10,7 @@ import {
   SOURCES,
   snapshotNameForSource,
 } from './services/scrapers/index.js';
-import { discoverNewEntrants } from './services/scrapers/newEntrantScraper.js';
-import { listSnapshots, loadSnapshot, saveSnapshot, ageMs } from './services/snapshotStore.js';
+import { listSnapshots, loadSnapshot, ageMs } from './services/snapshotStore.js';
 import { competitorRegistry } from './services/competitorRegistry.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -150,44 +149,6 @@ app.post('/api/refresh-data', async (req, res) => {
     const report = await refreshAllSources();
     res.json({ success: true, message: 'Data refreshed', ...report });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-});
-
-// ────────── New entrant discovery ──────────
-// GET  /api/discover-entrants            — cached snapshot (returns immediately)
-// POST /api/discover-entrants            — runs scrapers live (HN + GitHub + Product Hunt)
-//   body/query: keyword, category, maxAgeDays
-app.get('/api/discover-entrants', async (req, res) => {
-  try {
-    const snap = await loadSnapshot(snapshotNameForSource('entrants'));
-    if (!snap) {
-      return res.json({ success: true, cached: false, candidates: [], counts: null, fetchedAt: null });
-    }
-    res.json({
-      success: true,
-      cached: true,
-      fetchedAt: snap.fetchedAt,
-      ...snap.payload,
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-});
-
-app.post('/api/discover-entrants', async (req, res) => {
-  try {
-    const keyword = req.body?.keyword || req.query.keyword || null;
-    const category = req.body?.category || req.query.category || null;
-    const maxAgeDays = Number(req.body?.maxAgeDays || req.query.maxAgeDays || 365);
-    const result = await discoverNewEntrants({ keyword, category, maxAgeDays });
-    // Persist the unfiltered run so the cached GET returns something useful.
-    if (!keyword && !category) {
-      await saveSnapshot(snapshotNameForSource('entrants'), result);
-    }
-    res.json({ success: true, cached: false, ...result });
-  } catch (err) {
-    console.error('POST /api/discover-entrants error:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 });
