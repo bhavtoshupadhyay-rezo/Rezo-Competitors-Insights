@@ -42,10 +42,12 @@ export function useLiveCompetitorOverlay() {
   const refresh = useCallback(async (source) => {
     setMeta(m => ({ ...m, loading: true, error: null }));
     try {
-      if (source) await refreshSource(source); else await refreshAllData();
+      const result = source ? await refreshSource(source) : await refreshAllData();
       await load();
+      return result;
     } catch (err) {
       setMeta(m => ({ ...m, loading: false, error: err.message }));
+      throw err;
     }
   }, [load]);
 
@@ -74,10 +76,12 @@ export function useLiveVoices(seedData) {
   const refresh = useCallback(async () => {
     setMeta(m => ({ ...m, loading: true, error: null }));
     try {
-      await refreshSource('huggingface');
+      const result = await refreshSource('huggingface');
       await load();
+      return result;
     } catch (err) {
       setMeta(m => ({ ...m, loading: false, error: err.message }));
+      throw err;
     }
   }, [load]);
 
