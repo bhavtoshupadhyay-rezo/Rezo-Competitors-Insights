@@ -121,6 +121,21 @@ const VoiceCard = ({ voice, onClick }) => {
         )}
       </div>
 
+      {/* Live HF signal — only when scrapers returned data for this creator */}
+      {voice.live?.totalModels > 0 && (
+        <div className="mt-2 text-[10px] text-gray-500" onClick={(e) => e.stopPropagation()}>
+          <a
+            href={voice.live.top?.[0]?.url || 'https://huggingface.co'}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-700/40 hover:bg-gray-700 hover:text-gray-300"
+            title="Hugging Face presence — live"
+          >
+            🤗 {voice.live.totalModels} models · {voice.live.totalLikes}♥
+          </a>
+        </div>
+      )}
+
       {/* Footer cue */}
       <div className="mt-auto flex items-center justify-between text-xs text-gray-600 group-hover:text-gray-400 transition-colors pt-1 border-t border-gray-700/50">
         <span>{voice.pricing}</span>

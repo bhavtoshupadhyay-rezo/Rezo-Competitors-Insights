@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Live scraper snapshots — regenerated on boot / cron
+server/data/snapshots/*.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

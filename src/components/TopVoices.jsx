@@ -2,8 +2,10 @@ import { useState, useMemo } from 'react';
 import { Search, Mic, TrendingUp, Globe, Zap, SlidersHorizontal, Flag } from 'lucide-react';
 import VoiceCard from './VoiceCard';
 import VoiceDetailModal from './VoiceDetailModal';
+import LiveDataBadge from './LiveDataBadge';
 import { topVoicesData, voiceCategories, voiceProviders } from '../data/topVoicesData';
 import { indianVoicesData, indianVoiceCategories, indianVoiceProviders } from '../data/indianVoicesData';
+import { useLiveVoices } from '../services/useLiveData';
 
 const TABS = [
   { id: 'global', label: 'Global Voices',      icon: Globe, count: topVoicesData.length },
@@ -18,9 +20,11 @@ const TopVoices = () => {
   const [sortBy,          setSortBy]          = useState('buzzScore');
   const [selectedVoice,   setSelectedVoice]   = useState(null);
 
-  // Switch dataset based on active tab
+  // Switch dataset based on active tab. Both datasets get Hugging Face
+  // model-volume / popularity enrichment grafted on by `creator` name.
   const isIndian = activeTab === 'indian';
-  const dataset    = isIndian ? indianVoicesData       : topVoicesData;
+  const seedDataset = isIndian ? indianVoicesData : topVoicesData;
+  const { voices: dataset, meta: liveMeta, refresh: refreshLive } = useLiveVoices(seedDataset);
   const categories = isIndian ? indianVoiceCategories  : voiceCategories;
   const providers  = isIndian ? indianVoiceProviders   : voiceProviders;
 
@@ -99,7 +103,11 @@ const TopVoices = () => {
               </p>
             </div>
             <div className="flex items-center gap-2 text-xs text-gray-500">
-              <span className="px-2 py-1 bg-gray-700 rounded">Updated May 2026</span>
+              <LiveDataBadge
+                meta={liveMeta}
+                onRefresh={() => refreshLive()}
+                label="HF models"
+              />
             </div>
           </div>
 

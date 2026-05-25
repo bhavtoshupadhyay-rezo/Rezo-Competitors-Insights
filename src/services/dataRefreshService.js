@@ -1,56 +1,58 @@
-// Frontend Data Refresh Service
-// Communicates with backend to fetch latest competitor data from web
+// Frontend live-data client. All paths are relative — Vite proxies /api/*
+// to the Express server in dev, and in prod they hit the same origin.
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE = '/api';
 
-export async function refreshAllData() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/refresh-data`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error refreshing data:', error);
-    throw error;
-  }
+async function jsonOrThrow(res, label) {
+  if (!res.ok) throw new Error(`${label}: HTTP ${res.status}`);
+  return res.json();
 }
 
-export async function getCompetitorUpdates() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/competitor-updates`);
+export async function fetchLiveCompetitors() {
+  const res = await fetch(`${API_BASE}/competitors`, { headers: { Accept: 'application/json' } });
+  return jsonOrThrow(res, '/api/competitors');
+}
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+export async function fetchLiveVoices() {
+  const res = await fetch(`${API_BASE}/voices`, { headers: { Accept: 'application/json' } });
+  return jsonOrThrow(res, '/api/voices');
+}
 
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching competitor updates:', error);
-    throw error;
-  }
+export async function fetchLiveNews() {
+  const res = await fetch(`${API_BASE}/news`, { headers: { Accept: 'application/json' } });
+  return jsonOrThrow(res, '/api/news');
+}
+
+export async function refreshAllData() {
+  const res = await fetch(`${API_BASE}/refresh-all`, { method: 'POST' });
+  return jsonOrThrow(res, '/api/refresh-all');
+}
+
+export async function refreshSource(source) {
+  const res = await fetch(`${API_BASE}/refresh/${encodeURIComponent(source)}`, { method: 'POST' });
+  return jsonOrThrow(res, `/api/refresh/${source}`);
+}
+
+export async function fetchSnapshots() {
+  const res = await fetch(`${API_BASE}/snapshots`);
+  return jsonOrThrow(res, '/api/snapshots');
 }
 
 export async function checkServerHealth() {
   try {
-    const response = await fetch(`${API_BASE_URL}/health`);
-    return response.ok;
+    const res = await fetch(`${API_BASE}/health`);
+    return res.ok;
   } catch {
     return false;
   }
 }
 
 export default {
+  fetchLiveCompetitors,
+  fetchLiveVoices,
+  fetchLiveNews,
   refreshAllData,
-  getCompetitorUpdates,
-  checkServerHealth
+  refreshSource,
+  fetchSnapshots,
+  checkServerHealth,
 };

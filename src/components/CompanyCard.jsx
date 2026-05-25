@@ -1,6 +1,12 @@
-import { TrendingUp, MapPin, DollarSign, Star, X } from 'lucide-react';
+import { TrendingUp, MapPin, DollarSign, Star, X, Github, MessageSquare, Newspaper } from 'lucide-react';
 import InfoTooltip from './InfoTooltip';
 import glossary from '../data/glossary';
+
+const compactNum = (n) => {
+  if (n == null) return '–';
+  if (n >= 1000) return `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k`;
+  return String(n);
+};
 
 const getCategoryColor = (category) => {
   const colors = {
@@ -13,8 +19,14 @@ const getCategoryColor = (category) => {
   return colors[category] || 'bg-gray-500/20 text-gray-400 border-gray-500/30';
 };
 
-const CompanyCard = ({ company, onClick, onWatchlist, isWatched, canRemove, onRemove }) => {
+const CompanyCard = ({ company, live, onClick, onWatchlist, isWatched, canRemove, onRemove }) => {
   const flagshipProduct = company.products.find(p => p.flagship);
+
+  const gh = live?.github;
+  const hn = live?.hackerNews;
+  const blog = live?.blog;
+  const latestBlogPost = blog?.posts?.[0] || null;
+  const hasLiveSignals = !!(gh?.totalStars || hn?.mentionsLast90d || latestBlogPost);
 
   return (
     <div
@@ -154,6 +166,50 @@ const CompanyCard = ({ company, onClick, onWatchlist, isWatched, canRemove, onRe
           <span className="px-3 py-1 bg-warning/20 text-warning text-xs font-medium rounded-full border border-warning/30 animate-pulse">
             NEW ENTRANT
           </span>
+        </div>
+      )}
+
+      {/* Live web-intel signals — shown only when scrapers returned data */}
+      {hasLiveSignals && (
+        <div className="mt-3 pt-3 border-t border-gray-700/60" onClick={(e) => e.stopPropagation()}>
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            {gh?.totalStars > 0 && (
+              <a
+                href={gh.topRepos?.[0]?.url || '#'}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1 px-2 py-1 rounded bg-gray-700/50 text-gray-300 hover:bg-gray-700 hover:text-white"
+                title={`${gh.repoCount} public repos`}
+              >
+                <Github size={12} />
+                <span>{compactNum(gh.totalStars)}★</span>
+              </a>
+            )}
+            {hn?.mentionsLast90d > 0 && (
+              <a
+                href={hn.topStories?.[0]?.url || 'https://news.ycombinator.com'}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1 px-2 py-1 rounded bg-gray-700/50 text-orange-300 hover:bg-gray-700 hover:text-orange-200"
+                title={`${hn.mentionsLast90d} Hacker News stories in last 90 days`}
+              >
+                <MessageSquare size={12} />
+                <span>{hn.mentionsLast90d} HN · {compactNum(hn.totalPoints)}pts</span>
+              </a>
+            )}
+            {latestBlogPost && (
+              <a
+                href={latestBlogPost.url}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1 px-2 py-1 rounded bg-gray-700/50 text-blue-300 hover:bg-gray-700 hover:text-blue-200 max-w-[220px]"
+                title={latestBlogPost.title}
+              >
+                <Newspaper size={12} className="flex-shrink-0" />
+                <span className="truncate">{latestBlogPost.title}</span>
+              </a>
+            )}
+          </div>
         </div>
       )}
     </div>

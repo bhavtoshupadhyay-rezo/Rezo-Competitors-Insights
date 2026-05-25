@@ -9,7 +9,9 @@ import NotificationCenter from './NotificationCenter';
 import NewEntrantScanner from './NewEntrantScanner';
 import FeatureLaunchTimeline from './FeatureLaunchTimeline';
 import AddMoreMenu from './AddMoreMenu';
+import LiveDataBadge from './LiveDataBadge';
 import { competitorsData, categories } from '../data/competitorsData';
+import { useLiveCompetitorOverlay } from '../services/useLiveData';
 
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -24,6 +26,10 @@ const Dashboard = () => {
   // Competitors list as state (starts with initial data, can be extended)
   const [competitors, setCompetitors] = useState(competitorsData);
   const [addedCompanyIds, setAddedCompanyIds] = useState(new Set());
+
+  // Live enrichment overlay (GitHub, Hacker News, Wikipedia, blog posts)
+  // keyed by competitor id. Refresh button calls /api/refresh-all.
+  const { liveById, meta: liveMeta, refresh: refreshLive } = useLiveCompetitorOverlay();
 
   // Timestamp tracking for individual companies
   const [companyTimestamps, setCompanyTimestamps] = useState({});
@@ -246,6 +252,11 @@ const Dashboard = () => {
               <p className="text-sm text-gray-400">Rezo.ai Intelligence Hub</p>
             </div>
             <div className="flex items-center gap-3">
+              <LiveDataBadge
+                meta={liveMeta}
+                onRefresh={() => refreshLive()}
+                label="Web intel"
+              />
               {/* Add More Menu - New Primary Action */}
               <AddMoreMenu
                 onScanNewEntrants={() => setShowScanner(true)}
@@ -373,6 +384,7 @@ const Dashboard = () => {
                 <CompanyCard
                   key={company.id}
                   company={company}
+                  live={liveById[company.id] || null}
                   onClick={() => setSelectedCompany(company)}
                   onWatchlist={() => toggleWatchlist(company.id)}
                   isWatched={watchlist.includes(company.id)}
