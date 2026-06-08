@@ -21,6 +21,7 @@ const isIndianCompany = (c) => (c?.hq || '').toLowerCase().includes('india');
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [regionTab, setRegionTab] = useState('all'); // 'all' | 'indian' | 'global'
   const [sortBy, setSortBy] = useState('buzzScore');
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showComparison, setShowComparison] = useState(false);
@@ -422,82 +423,78 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Results Count */}
-            <div className="mb-4">
-              <p className="text-gray-400 text-sm">
-                Showing {filteredCompetitors.length} of {competitors.length} competitors
-                {' · '}
-                <span className="text-orange-400">{indianCompetitors.length} Indian</span>
-                {' · '}
-                <span className="text-blue-400">{globalCompetitors.length} Global</span>
-              </p>
-            </div>
+            {/* ─── Region tabs ─── */}
+            {/* Single grid, switched by tab. Search/Category/Sort filter first;
+                the tab picks which slice of the filtered set to render. */}
+            {(() => {
+              const TABS = [
+                { id: 'all',    label: 'All',     count: filteredCompetitors.length, icon: Users, color: 'text-accent',       activeRing: 'border-accent text-accent',          subtitle: 'Every vendor we track' },
+                { id: 'indian', label: 'Indian',  count: indianCompetitors.length,   icon: Flag,  color: 'text-orange-400',   activeRing: 'border-orange-400 text-orange-400',  subtitle: "HQ'd in India · primary market overlap with Rezo" },
+                { id: 'global', label: 'Global',  count: globalCompetitors.length,   icon: Globe, color: 'text-blue-400',     activeRing: 'border-blue-400 text-blue-400',      subtitle: "HQ'd outside India · capability + pricing benchmark" },
+              ];
+              const visible =
+                regionTab === 'indian' ? indianCompetitors :
+                regionTab === 'global' ? globalCompetitors :
+                filteredCompetitors;
+              const activeTab = TABS.find(t => t.id === regionTab) || TABS[0];
 
-            {/* ─── Indian competitors ─── */}
-            <section className="mb-10">
-              <div className="flex items-center gap-2 mb-3">
-                <Flag size={18} className="text-orange-400" />
-                <h2 className="text-lg font-semibold text-white">Indian Competitors</h2>
-                <span className="text-xs text-gray-500 ml-1">({indianCompetitors.length})</span>
-                <span className="text-xs text-gray-500 ml-auto">HQ'd in India · primary market overlap with Rezo</span>
-              </div>
-              {indianCompetitors.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {indianCompetitors.map(company => (
-                    <CompanyCard
-                      key={company.id}
-                      company={company}
-                      live={liveById[company.id] || null}
-                      onClick={() => setSelectedCompany(company)}
-                      onWatchlist={() => toggleWatchlist(company.id)}
-                      isWatched={watchlist.includes(company.id)}
-                      canRemove={addedCompanyIds.has(company.id)}
-                      onRemove={handleRemoveFromList}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-sm py-4 border border-dashed border-gray-700 rounded-lg text-center">
-                  No Indian competitors match your filters.
-                </p>
-              )}
-            </section>
+              return (
+                <>
+                  <div role="tablist" className="flex items-center gap-1 mb-3 border-b border-gray-700">
+                    {TABS.map(t => {
+                      const Icon = t.icon;
+                      const active = t.id === regionTab;
+                      return (
+                        <button
+                          key={t.id}
+                          role="tab"
+                          aria-selected={active}
+                          onClick={() => setRegionTab(t.id)}
+                          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
+                            active
+                              ? t.activeRing
+                              : 'border-transparent text-gray-400 hover:text-gray-200'
+                          }`}
+                        >
+                          <Icon size={16} className={active ? t.color : ''} />
+                          <span>{t.label}</span>
+                          <span className={`ml-1 px-1.5 py-0.5 rounded text-xs ${
+                            active ? 'bg-gray-700 text-white' : 'bg-gray-800 text-gray-400'
+                          }`}>
+                            {t.count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-            {/* ─── Global competitors ─── */}
-            <section>
-              <div className="flex items-center gap-2 mb-3">
-                <Globe size={18} className="text-blue-400" />
-                <h2 className="text-lg font-semibold text-white">Global Competitors</h2>
-                <span className="text-xs text-gray-500 ml-1">({globalCompetitors.length})</span>
-                <span className="text-xs text-gray-500 ml-auto">HQ'd outside India · capability + pricing benchmark</span>
-              </div>
-              {globalCompetitors.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {globalCompetitors.map(company => (
-                    <CompanyCard
-                      key={company.id}
-                      company={company}
-                      live={liveById[company.id] || null}
-                      onClick={() => setSelectedCompany(company)}
-                      onWatchlist={() => toggleWatchlist(company.id)}
-                      isWatched={watchlist.includes(company.id)}
-                      canRemove={addedCompanyIds.has(company.id)}
-                      onRemove={handleRemoveFromList}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-sm py-4 border border-dashed border-gray-700 rounded-lg text-center">
-                  No global competitors match your filters.
-                </p>
-              )}
-            </section>
+                  <p className="text-xs text-gray-500 mb-4">{activeTab.subtitle}</p>
 
-            {filteredCompetitors.length === 0 && (
-              <div className="text-center py-16">
-                <p className="text-gray-400 text-lg">No competitors found matching your criteria</p>
-              </div>
-            )}
+                  {visible.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {visible.map(company => (
+                        <CompanyCard
+                          key={company.id}
+                          company={company}
+                          live={liveById[company.id] || null}
+                          onClick={() => setSelectedCompany(company)}
+                          onWatchlist={() => toggleWatchlist(company.id)}
+                          isWatched={watchlist.includes(company.id)}
+                          canRemove={addedCompanyIds.has(company.id)}
+                          onRemove={handleRemoveFromList}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-16 border border-dashed border-gray-700 rounded-lg">
+                      <p className="text-gray-400 text-sm">
+                        No {regionTab === 'all' ? '' : regionTab + ' '}competitors match your filters.
+                      </p>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
           </div>
 
           {/* Right Section - Feature Launch Timeline (Velocity Tracker) */}
