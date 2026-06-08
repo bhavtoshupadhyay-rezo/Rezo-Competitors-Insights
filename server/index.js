@@ -12,6 +12,14 @@ import {
 } from './services/scrapers/index.js';
 import { listSnapshots, loadSnapshot, ageMs } from './services/snapshotStore.js';
 import { competitorRegistry } from './services/competitorRegistry.js';
+import { count } from './db/db.js';
+import { seedIfEmpty } from './db/seed.js';
+import { makeCrudRouter } from './routes/crud.js';
+import competitorSchema from './schemas/competitor.schema.json' with { type: 'json' };
+import voiceSchema      from './schemas/voice.schema.json'      with { type: 'json' };
+import pricingSchema    from './schemas/pricing.schema.json'    with { type: 'json' };
+import newsSchema       from './schemas/news.schema.json'       with { type: 'json' };
+import glossarySchema   from './schemas/glossary.schema.json'   with { type: 'json' };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
@@ -45,8 +53,27 @@ if (SITE_PASSWORD) {
 }
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    db: {
+      competitors: count('competitor'),
+      voices:      count('voice'),
+      pricing:     count('pricing'),
+      news:        count('news'),
+      glossary:    count('glossary'),
+    },
+  });
 });
+
+// ────────── CRUD over the structured DB ──────────
+// Mounted under /api/db/* so they don't collide with /api/competitors which
+// returns scraped enrichment data (GitHub stars, HN mentions, etc.).
+app.use('/api/db/competitors', makeCrudRouter('competitor', competitorSchema));
+app.use('/api/db/voices',      makeCrudRouter('voice',      voiceSchema));
+app.use('/api/db/pricing',     makeCrudRouter('pricing',    pricingSchema));
+app.use('/api/db/news',        makeCrudRouter('news',       newsSchema));
+app.use('/api/db/glossary',    makeCrudRouter('glossary',   glossarySchema));
 
 // ────────── Live competitor enrichments ──────────
 // Returns per-competitor data merged from all source snapshots.
@@ -222,8 +249,22 @@ cron.schedule('0 * * * *', () => {
 app.listen(PORT, async () => {
   console.log(`🚀 Server running on http://localhost:${PORT} (${NODE_ENV})`);
 
-  // First-boot seed: if no snapshots exist, run a refresh in the background
-  // so the next /api/competitors call returns live data.
+  // First-boot DB seed: if any table is empty, populate from the static JS
+  // modules so the API has something to return. Existing rows are untouched
+  // — operator edits persist across restarts.
+  try {
+    const seeded = await seedIfEmpty();
+    const populated = Object.entries(seeded).filter(([, n]) => n > 0);
+    if (populated.length) {
+      console.log('[boot] seeded DB tables:', populated.map(([k, n]) => `${k}=${n}`).join(', '));
+    } else {
+      console.log('[boot] DB already populated — skipping seed');
+    }
+  } catch (err) {
+    console.error('[boot] DB seed failed:', err.message);
+  }
+
+  // Snapshot refresh path (scraped enrichments) is independent of the DB.
   const existing = await listSnapshots();
   if (existing.length === 0) {
     console.log('[boot] no snapshots found — kicking off initial refresh');

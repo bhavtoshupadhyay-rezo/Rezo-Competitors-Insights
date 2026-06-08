@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glossary.schema.json",
+  "title": "GlossaryTerm",
+  "type": "object",
+  "required": ["term", "definition"],
+  "additionalProperties": false,
+  "properties": {
+    "term":       { "type": "string", "minLength": 1, "maxLength": 80 },
+    "definition": { "type": "string", "minLength": 1, "maxLength": 600 }
+  }
+}

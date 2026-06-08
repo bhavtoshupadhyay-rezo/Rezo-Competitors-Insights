@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "news.schema.json",
+  "title": "NewsItem",
+  "type": "object",
+  "required": ["id", "title"],
+  "additionalProperties": false,
+  "properties": {
+    "id":         { "type": "string", "minLength": 1, "maxLength": 64 },
+    "title":      { "type": "string", "minLength": 1, "maxLength": 300 },
+    "summary":    { "type": ["string", "null"] },
+    "category":   { "type": "string", "enum": ["funding", "feature_launch", "partnership", "compliance", "pricing", "new_entrant", "market", "acquisition"] },
+    "date":       { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "region":     { "type": ["string", "null"], "enum": ["Global", "India", "US", "Europe", null] },
+    "source":     { "type": ["string", "null"] },
+    "url":        { "type": ["string", "null"], "format": "uri" },
+    "impact":     { "type": ["string", "null"], "enum": ["low", "medium", "high", "critical", null] },
+    "related":    { "type": "array", "items": { "type": "string" }, "default": [] },
+    "parameters": { "type": "array", "items": { "type": "string" }, "default": [] }
+  }
+}

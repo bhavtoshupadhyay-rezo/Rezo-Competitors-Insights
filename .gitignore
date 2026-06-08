@@ -15,6 +15,11 @@ dist-ssr
 # Live scraper snapshots — regenerated on boot / cron
 server/data/snapshots/*.json
 
+# SQLite database files — seeded from src/data/* on boot, never committed
+server/data/insights.db
+server/data/insights.db-shm
+server/data/insights.db-wal
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

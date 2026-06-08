@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pricing.schema.json",
+  "title": "Pricing",
+  "type": "object",
+  "required": ["competitorId"],
+  "additionalProperties": false,
+  "$defs": {
+    "segment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "offered":  { "oneOf": [{ "type": "boolean" }, { "type": "string", "enum": ["unclear"] }] },
+        "unit":     { "type": "string" },
+        "price":    { "oneOf": [{ "type": "number" }, { "type": "string", "enum": ["contact_sales"] }, { "type": "null" }] },
+        "currency": { "type": ["string", "null"], "enum": ["USD", "INR", null] },
+        "notes":    { "type": "string" }
+      }
+    }
+  },
+  "properties": {
+    "competitorId":        { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "publicPricing":       { "type": "boolean" },
+    "sourceUrl":           { "type": ["string", "null"], "format": "uri" },
+    "internalPlaceholder": { "type": "boolean", "default": false },
+    "error":               { "type": ["string", "null"] },
+    "t2t":                 { "$ref": "#/$defs/segment" },
+    "t2v":                 { "$ref": "#/$defs/segment" },
+    "v2t":                 { "$ref": "#/$defs/segment" },
+    "v2v":                 { "$ref": "#/$defs/segment" },
+    "telephony": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "bundled":         { "type": ["boolean", "null"] },
+        "inboundPerMin":   { "type": ["number", "null"] },
+        "outboundPerMin":  { "type": ["number", "null"] },
+        "byoTwilio":       { "type": ["boolean", "null"] },
+        "notes":           { "type": ["string", "null"] }
+      }
+    },
+    "packaging": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "model":       { "type": ["string", "null"] },
+        "freeCredits": { "type": ["string", "null"] },
+        "lowestTier":  { "type": ["string", "null"] }
+      }
+    },
+    "lastVerified": { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+  }
+}
