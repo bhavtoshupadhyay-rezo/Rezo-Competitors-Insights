@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Users, Sparkles, Bell, GitCompare, Info } from 'lucide-react';
+import { Search, Users, Sparkles, Bell, GitCompare, Info, Flag, Globe } from 'lucide-react';
 import CompanyCard from './CompanyCard';
 import InfoTooltip from './InfoTooltip';
 import glossary from '../data/glossary';
@@ -12,6 +12,11 @@ import AddMoreMenu from './AddMoreMenu';
 import LiveDataBadge from './LiveDataBadge';
 import { competitorsData, categories } from '../data/competitorsData';
 import { useLiveCompetitorOverlay } from '../services/useLiveData';
+
+// Region classification: HQ string contains "india" → Indian, else Global.
+// Catches "India", "India (Bangalore)", and "USA/India" (Uniphore — has
+// strong India presence so it's grouped with the Indian peer set).
+const isIndianCompany = (c) => (c?.hq || '').toLowerCase().includes('india');
 
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -224,12 +229,26 @@ const Dashboard = () => {
     return filtered;
   }, [competitors, searchTerm, selectedCategory, sortBy]);
 
+  // Region split — applied AFTER search/category/sort so both sections respect
+  // the same filters. Each section gets its own count and empty state.
+  const indianCompetitors = useMemo(
+    () => filteredCompetitors.filter(isIndianCompany),
+    [filteredCompetitors]
+  );
+  const globalCompetitors = useMemo(
+    () => filteredCompetitors.filter((c) => !isIndianCompany(c)),
+    [filteredCompetitors]
+  );
+
   // Quick stats
   const stats = useMemo(() => {
     const newEntrants = competitors.filter(c => c.founded >= 2023).length;
+    const indianTotal = competitors.filter(isIndianCompany).length;
     return {
       total: competitors.length,
-      newEntrants
+      newEntrants,
+      indian: indianTotal,
+      global: competitors.length - indianTotal,
     };
   }, [competitors]);
 
@@ -294,13 +313,13 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-secondary p-6 rounded-xl border border-gray-700">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm flex items-center">
                   <InfoTooltip content="Every vendor we actively track in the voice AI / contact-center space.">
-                    Total Competitors
+                    Total
                   </InfoTooltip>
                 </p>
                 <p className="text-3xl font-bold text-white mt-1">{stats.total}</p>
@@ -315,8 +334,40 @@ const Dashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm flex items-center">
+                  <InfoTooltip content="Vendors HQ'd in India (or with a primary India operation, e.g. Uniphore). Most relevant for direct competitive overlap on the Indian market.">
+                    Indian
+                  </InfoTooltip>
+                </p>
+                <p className="text-3xl font-bold text-white mt-1">{stats.indian}</p>
+              </div>
+              <div className="p-3 bg-orange-500/20 rounded-lg">
+                <Flag className="text-orange-400" size={24} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-secondary p-6 rounded-xl border border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm flex items-center">
+                  <InfoTooltip content="Vendors HQ'd outside India — typically US-led, sold globally. Useful for benchmarking on capability, pricing tier, and category leadership.">
+                    Global
+                  </InfoTooltip>
+                </p>
+                <p className="text-3xl font-bold text-white mt-1">{stats.global}</p>
+              </div>
+              <div className="p-3 bg-blue-500/20 rounded-lg">
+                <Globe className="text-blue-400" size={24} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-secondary p-6 rounded-xl border border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm flex items-center">
                   <InfoTooltip content={glossary.newEntrant}>
-                    New Entrants (2023+)
+                    New (2023+)
                   </InfoTooltip>
                 </p>
                 <p className="text-3xl font-bold text-white mt-1">{stats.newEntrants}</p>
@@ -375,24 +426,72 @@ const Dashboard = () => {
             <div className="mb-4">
               <p className="text-gray-400 text-sm">
                 Showing {filteredCompetitors.length} of {competitors.length} competitors
+                {' · '}
+                <span className="text-orange-400">{indianCompetitors.length} Indian</span>
+                {' · '}
+                <span className="text-blue-400">{globalCompetitors.length} Global</span>
               </p>
             </div>
 
-            {/* Company Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {filteredCompetitors.map(company => (
-                <CompanyCard
-                  key={company.id}
-                  company={company}
-                  live={liveById[company.id] || null}
-                  onClick={() => setSelectedCompany(company)}
-                  onWatchlist={() => toggleWatchlist(company.id)}
-                  isWatched={watchlist.includes(company.id)}
-                  canRemove={addedCompanyIds.has(company.id)}
-                  onRemove={handleRemoveFromList}
-                />
-              ))}
-            </div>
+            {/* ─── Indian competitors ─── */}
+            <section className="mb-10">
+              <div className="flex items-center gap-2 mb-3">
+                <Flag size={18} className="text-orange-400" />
+                <h2 className="text-lg font-semibold text-white">Indian Competitors</h2>
+                <span className="text-xs text-gray-500 ml-1">({indianCompetitors.length})</span>
+                <span className="text-xs text-gray-500 ml-auto">HQ'd in India · primary market overlap with Rezo</span>
+              </div>
+              {indianCompetitors.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {indianCompetitors.map(company => (
+                    <CompanyCard
+                      key={company.id}
+                      company={company}
+                      live={liveById[company.id] || null}
+                      onClick={() => setSelectedCompany(company)}
+                      onWatchlist={() => toggleWatchlist(company.id)}
+                      isWatched={watchlist.includes(company.id)}
+                      canRemove={addedCompanyIds.has(company.id)}
+                      onRemove={handleRemoveFromList}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm py-4 border border-dashed border-gray-700 rounded-lg text-center">
+                  No Indian competitors match your filters.
+                </p>
+              )}
+            </section>
+
+            {/* ─── Global competitors ─── */}
+            <section>
+              <div className="flex items-center gap-2 mb-3">
+                <Globe size={18} className="text-blue-400" />
+                <h2 className="text-lg font-semibold text-white">Global Competitors</h2>
+                <span className="text-xs text-gray-500 ml-1">({globalCompetitors.length})</span>
+                <span className="text-xs text-gray-500 ml-auto">HQ'd outside India · capability + pricing benchmark</span>
+              </div>
+              {globalCompetitors.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {globalCompetitors.map(company => (
+                    <CompanyCard
+                      key={company.id}
+                      company={company}
+                      live={liveById[company.id] || null}
+                      onClick={() => setSelectedCompany(company)}
+                      onWatchlist={() => toggleWatchlist(company.id)}
+                      isWatched={watchlist.includes(company.id)}
+                      canRemove={addedCompanyIds.has(company.id)}
+                      onRemove={handleRemoveFromList}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm py-4 border border-dashed border-gray-700 rounded-lg text-center">
+                  No global competitors match your filters.
+                </p>
+              )}
+            </section>
 
             {filteredCompetitors.length === 0 && (
               <div className="text-center py-16">
