@@ -674,6 +674,281 @@ export const competitorsData = [
     ],
     industries: ['E-commerce', 'Retail', 'BFSI'],
     website: 'https://kapture.cx'
+  },
+  {
+    id: 'sarvam-ai',
+    name: 'Sarvam AI',
+    logo: 'https://www.sarvam.ai/favicon.ico',
+    category: 'Core Tech & Models',
+    founded: 2023,
+    hq: 'India (Bangalore)',
+    agentAI: true,
+    fundingStatus: 'Funded',
+    totalFunding: '$41M+',
+    lastRound: '$41M Series A',
+    lastRoundDate: 'Dec 2023',
+    estimatedARR: '$8M+',
+    investors: ['Lightspeed', 'Peak XV Partners', 'Khosla Ventures'],
+    buzzScore: 90,
+    description: 'Indic foundation models — Bulbul TTS, Saaras ASR, Sarvam-1 LLM, Sarvam Agents',
+    products: [
+      { name: 'Bulbul TTS', description: 'Multilingual TTS — 11 Indian languages, REST + WebSocket streaming', flagship: true },
+      { name: 'Saaras ASR', description: 'Multilingual speech-to-text with code-mixing support', flagship: true },
+      { name: 'Sarvam Agents', description: 'Voice agent platform built on Sarvam-1 LLM', flagship: false },
+      { name: 'Sarvam-M', description: 'Open-weight Indic LLM for downstream fine-tuning', flagship: false }
+    ],
+    features: {
+      proprietaryLLM: true,
+      nativeDialer: false,
+      automatedQA: false,
+      diyBotBuilder: true,
+      multiLingual: true,
+      lowLatency: true,
+      securityCertifications: ['SOC 2 Type 2'],
+      emotionDetection: false,
+      realTimeTransfer: false,
+      omniChannel: false,
+      vernacularSupport: '11+ Indic languages',
+      streamingTTS: true
+    },
+    painPoints: [
+      { issue: 'No Native Dialer', severity: 'high', source: 'Public product docs — Sarvam is API/model layer only' },
+      { issue: 'No Contact Center Suite', severity: 'high', source: 'Positioning: foundation models, not CX platform' },
+      { issue: 'No Automated QA', severity: 'high', source: 'API surface (docs.sarvam.ai)' },
+      { issue: 'Early-stage Enterprise Maturity', severity: 'medium', source: 'Founded 2023 — limited large-deployment case studies' }
+    ],
+    analyticsMaturity: {
+      baseReports: { callRecording: false, transcription: true, aht: false },
+      advancedIntelligence: { sentimentAnalysis: false, emotionDetection: false, automatedQA: false, agentCoaching: false }
+    },
+    recentFeatures: [
+      { name: 'Bulbul v3 (Streaming TTS)', launchDate: '2026-03-18', isNew: true, url: 'https://docs.sarvam.ai/api-reference-docs/endpoints/text-to-speech' },
+      { name: 'Sarvam-M (Open-weights LLM)', launchDate: '2026-02-05', isNew: true, url: 'https://www.sarvam.ai/blogs/sarvam-m' },
+      { name: 'Saaras v2 Code-Mixed ASR', launchDate: '2025-12-10', isNew: false, url: 'https://docs.sarvam.ai/api-reference-docs/endpoints/speech-to-text' }
+    ],
+    recentFundings: [
+      { round: 'Series A', amount: '$41M', date: '2023-12-08', leadInvestor: 'Lightspeed', isRecent: true }
+    ],
+    industries: ['BFSI', 'Government', 'Education', 'Developer Tools'],
+    website: 'https://www.sarvam.ai'
+  },
+  {
+    id: 'gnani-ai',
+    name: 'Gnani.ai',
+    logo: 'https://gnani.ai/favicon.ico',
+    category: 'Voice Bot Specialist',
+    founded: 2016,
+    hq: 'India (Bangalore)',
+    agentAI: true,
+    fundingStatus: 'Funded',
+    totalFunding: '$15M+',
+    lastRound: '$7M Series A',
+    lastRoundDate: 'Sep 2019',
+    estimatedARR: '$12M+',
+    investors: ['Samsung Ventures', 'Info Edge Ventures', 'Wipro'],
+    buzzScore: 78,
+    description: 'Indic voice-first AI for contact centers — Vachana TTS, Armour ASR, 12 Indian languages',
+    products: [
+      { name: 'Voice AI Bot', description: 'Autonomous voice agents in 12 Indic languages for inbound/outbound', flagship: true },
+      { name: 'Vachana TTS', description: 'Open-source-friendly Indic TTS engine', flagship: true },
+      { name: 'Armour ASR', description: 'Telephony-optimised ASR with low-bandwidth support', flagship: false },
+      { name: 'Speech Analytics', description: '100% call auditing and conversation intelligence', flagship: false }
+    ],
+    features: {
+      proprietaryLLM: true,
+      nativeDialer: true,
+      automatedQA: true,
+      diyBotBuilder: true,
+      multiLingual: true,
+      lowLatency: true,
+      securityCertifications: ['SOC 2 Type 2', 'ISO 27001', 'PCI DSS'],
+      emotionDetection: true,
+      realTimeTransfer: true,
+      omniChannel: true,
+      vernacularSupport: '12 Indic languages',
+      voiceBiometrics: true
+    },
+    painPoints: [
+      { issue: 'Limited International Presence', severity: 'medium', source: 'Customer list — concentrated in India BFSI/telecom' },
+      { issue: 'Outdated Funding Round', severity: 'low', source: 'Last disclosed raise 2019; reliance on revenue + strategic investors' },
+      { issue: 'Smaller Voice Library vs Global Vendors', severity: 'low', source: 'Vendor comparison — focus is Indic depth, not voice count' }
+    ],
+    analyticsMaturity: {
+      baseReports: { callRecording: true, transcription: true, aht: true },
+      advancedIntelligence: { sentimentAnalysis: true, emotionDetection: true, automatedQA: true, agentCoaching: true }
+    },
+    recentFeatures: [
+      { name: 'Vachana TTS Open Source Release', launchDate: '2026-04-08', isNew: true, url: 'https://github.com/gnani-ai/text-to-speech' },
+      { name: 'Inya.ai Agentic Voice Platform', launchDate: '2026-02-20', isNew: true, url: 'https://gnani.ai/inya-ai' },
+      { name: 'Generative AI Bot Suite', launchDate: '2025-10-12', isNew: false, url: 'https://gnani.ai/generative-ai' }
+    ],
+    recentFundings: [
+      { round: 'Series A', amount: '$7M', date: '2019-09-10', leadInvestor: 'Samsung Ventures', isRecent: false },
+      { round: 'Seed', amount: '$4M', date: '2017-08-15', leadInvestor: 'Info Edge Ventures', isRecent: false }
+    ],
+    industries: ['BFSI', 'Telecom', 'Insurance', 'Retail'],
+    website: 'https://gnani.ai'
+  },
+  {
+    id: 'nurix-ai',
+    name: 'Nurix AI',
+    logo: 'https://www.nurix.ai/favicon.ico',
+    category: 'Voice Bot Specialist',
+    founded: 2024,
+    hq: 'India (Bangalore)',
+    agentAI: true,
+    fundingStatus: 'Funded',
+    totalFunding: '$27.5M',
+    lastRound: '$27.5M Seed',
+    lastRoundDate: 'Aug 2024',
+    estimatedARR: '$2M+',
+    investors: ['Accel', 'General Catalyst'],
+    buzzScore: 76,
+    description: 'Enterprise voice + text AI agents from the Cult.fit / Myntra founder (Mukesh Bansal)',
+    products: [
+      { name: 'Nurix Voice Agents', description: 'Multilingual voice agents for sales, support and CX', flagship: true },
+      { name: 'Nurix Workflows', description: 'Agentic workflow builder integrating CRM, ticketing, telephony', flagship: false }
+    ],
+    features: {
+      proprietaryLLM: false,
+      nativeDialer: false,
+      automatedQA: false,
+      diyBotBuilder: true,
+      multiLingual: true,
+      lowLatency: true,
+      securityCertifications: ['SOC 2 Type 2'],
+      emotionDetection: false,
+      realTimeTransfer: true,
+      omniChannel: true,
+      vernacularSupport: '5+ Indic + English'
+    },
+    painPoints: [
+      { issue: 'No Native Dialer', severity: 'high', source: 'Product surface — bring-your-own telephony' },
+      { issue: 'Very Early Stage', severity: 'high', source: 'Founded 2024; minimal public deployment data' },
+      { issue: 'No Public Speech Analytics Layer', severity: 'medium', source: 'nurix.ai product pages — focus is agent build' },
+      { issue: 'Unproven at Enterprise Scale', severity: 'medium', source: 'No large public BFSI/telecom case studies yet' }
+    ],
+    analyticsMaturity: {
+      baseReports: { callRecording: true, transcription: true, aht: false },
+      advancedIntelligence: { sentimentAnalysis: false, emotionDetection: false, automatedQA: false, agentCoaching: false }
+    },
+    recentFeatures: [
+      { name: 'Nurix Voice Studio', launchDate: '2026-04-12', isNew: true, url: 'https://www.nurix.ai/' },
+      { name: 'Multi-Agent Workflow Builder', launchDate: '2026-02-28', isNew: true, url: 'https://www.nurix.ai/' }
+    ],
+    recentFundings: [
+      { round: 'Seed', amount: '$27.5M', date: '2024-08-20', leadInvestor: 'Accel', isRecent: true }
+    ],
+    industries: ['Sales', 'Customer Support', 'BFSI'],
+    website: 'https://www.nurix.ai'
+  },
+  {
+    id: 'verloop-io',
+    name: 'Verloop.io',
+    logo: 'https://www.verloop.io/favicon.ico',
+    category: 'Omni Channel CX',
+    founded: 2016,
+    hq: 'India (Bangalore)',
+    agentAI: true,
+    fundingStatus: 'Funded',
+    totalFunding: '$10M+',
+    lastRound: '$6M Series A',
+    lastRoundDate: 'Jul 2022',
+    estimatedARR: '$10M+',
+    investors: ['Peak XV Partners', 'B Capital'],
+    buzzScore: 72,
+    description: 'Customer support automation — chat + voice AI agents, strong in MENA and India',
+    products: [
+      { name: 'Voice AI', description: 'Voice agents for inbound CS, integrated with leading CCaaS', flagship: true },
+      { name: 'Chatbot Suite', description: 'Omnichannel chat automation (WhatsApp, web, in-app)', flagship: true },
+      { name: 'Co-pilot for Agents', description: 'LLM-based real-time agent assist', flagship: false }
+    ],
+    features: {
+      proprietaryLLM: false,
+      nativeDialer: false,
+      automatedQA: true,
+      diyBotBuilder: true,
+      multiLingual: true,
+      lowLatency: true,
+      securityCertifications: ['SOC 2 Type 2', 'ISO 27001', 'GDPR', 'HIPAA'],
+      emotionDetection: false,
+      realTimeTransfer: true,
+      omniChannel: true,
+      vernacularSupport: '70+ languages (incl. 10+ Indic)'
+    },
+    painPoints: [
+      { issue: 'No Native Dialer', severity: 'high', source: 'verloop.io product docs — telephony via partners' },
+      { issue: 'Voice is Newer than Chat', severity: 'medium', source: 'Product history — chat-first since 2016, voice added later' },
+      { issue: 'No Proprietary LLM', severity: 'medium', source: 'Stack relies on third-party LLMs (OpenAI, Anthropic)' }
+    ],
+    analyticsMaturity: {
+      baseReports: { callRecording: true, transcription: true, aht: true },
+      advancedIntelligence: { sentimentAnalysis: true, emotionDetection: false, automatedQA: true, agentCoaching: false }
+    },
+    recentFeatures: [
+      { name: 'Voice AI 2.0 (Sub-second response)', launchDate: '2026-04-22', isNew: true, url: 'https://www.verloop.io/solutions/voice-ai/' },
+      { name: 'Agent Co-pilot GA', launchDate: '2026-01-15', isNew: true, url: 'https://www.verloop.io/products/copilot' }
+    ],
+    recentFundings: [
+      { round: 'Series A', amount: '$6M', date: '2022-07-10', leadInvestor: 'Peak XV Partners', isRecent: false },
+      { round: 'Seed', amount: '$3M', date: '2018-09-05', leadInvestor: 'Ant Financial', isRecent: false }
+    ],
+    industries: ['E-commerce', 'BFSI', 'Travel', 'Retail'],
+    website: 'https://www.verloop.io'
+  },
+  {
+    id: 'ringg-ai',
+    name: 'Ringg AI',
+    logo: 'https://www.ringg.ai/favicon.ico',
+    category: 'Voice Bot Specialist',
+    founded: 2023,
+    hq: 'India (Bangalore)',
+    agentAI: true,
+    fundingStatus: 'Funded',
+    totalFunding: '$3M+',
+    lastRound: '$3M Seed',
+    lastRoundDate: 'Aug 2024',
+    estimatedARR: '$1M+',
+    investors: ['Undisclosed angels', 'Y Combinator (W24)'],
+    buzzScore: 65,
+    description: 'No-code voice AI agent builder — multilingual, BYO-LLM, focused on Indian SMB + outbound',
+    products: [
+      { name: 'Ringg Voice Agents', description: 'No-code outbound + inbound voice agents, integrates with WhatsApp/CRM', flagship: true },
+      { name: 'Ringg Studio', description: 'Visual flow builder for call scripts and pathways', flagship: false }
+    ],
+    features: {
+      proprietaryLLM: false,
+      nativeDialer: true,
+      automatedQA: false,
+      diyBotBuilder: true,
+      multiLingual: true,
+      lowLatency: true,
+      securityCertifications: ['SOC 2 Type 2 (in progress)'],
+      emotionDetection: false,
+      realTimeTransfer: true,
+      omniChannel: false,
+      vernacularSupport: '8+ Indic + English',
+      byoModel: true
+    },
+    painPoints: [
+      { issue: 'No Speech Analytics', severity: 'high', source: 'ringg.ai feature surface — focus is agent build/run' },
+      { issue: 'No Automated QA', severity: 'high', source: 'Product docs — manual review only' },
+      { issue: 'Early-stage Security Posture', severity: 'medium', source: 'SOC 2 marked in-progress' },
+      { issue: 'SMB Focus, Limited Enterprise Refs', severity: 'medium', source: 'Customer page weighted to D2C + SMB' }
+    ],
+    analyticsMaturity: {
+      baseReports: { callRecording: true, transcription: true, aht: true },
+      advancedIntelligence: { sentimentAnalysis: false, emotionDetection: false, automatedQA: false, agentCoaching: false }
+    },
+    recentFeatures: [
+      { name: 'Ringg Pathways (Visual Flow Builder)', launchDate: '2026-04-18', isNew: true, url: 'https://www.ringg.ai/' },
+      { name: 'WhatsApp + Voice Handoff', launchDate: '2026-02-10', isNew: true, url: 'https://www.ringg.ai/' }
+    ],
+    recentFundings: [
+      { round: 'Seed', amount: '$3M', date: '2024-08-15', leadInvestor: 'Y Combinator', isRecent: true }
+    ],
+    industries: ['SMB', 'D2C', 'Real Estate', 'EdTech'],
+    website: 'https://www.ringg.ai'
   }
 ];
 
